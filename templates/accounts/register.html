@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up for Satisfy</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #121212;
+            color: white;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .form-container {
+            background-color: #282828;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 500px;
+        }
+        h2 {
+            color: white;
+            border-bottom: 2px solid #1DB954;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-control {
+            background-color: #3b3b3b;
+            border: none;
+            color: white;
+        }
+        .form-control::placeholder {
+            color: #888;
+        }
+        .form-control:focus {
+            background-color: #3b3b3b;
+            border-color: #1DB954;
+            box-shadow: none;
+        }
+        .errors {
+            color: #ff6b6b;
+            margin-top: 5px;
+        }
+        button {
+            background-color: #1DB954;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            width: 100%;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #1ed760;
+        }
+        p {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Sign Up for Satisfy</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="form-group">
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <div class="errors">{{ form.username.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <div class="errors">{{ form.email.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.password1 }}
+                {% if form.password1.errors %}
+                    <div class="errors">{{ form.password1.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.password2 }}
+                {% if form.password2.errors %}
+                    <div class="errors">{{ form.password2.errors }}</div>
+                {% endif %}
+            </div>
+            <button type="submit">Sign Up</button>
+            <p>Already have an account? <a href="/signin" style="color: white;">Login</a> here</p>
+        </form>
+    </div>
+</body>
+</html>

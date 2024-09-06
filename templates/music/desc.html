@@ -1,0 +1,115 @@
+{% extends 'music/spotify.html' %}
+{%block title %}{{song.song_name}}{% endblock %}
+{% block style %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style-desc.css' %}">
+{% endblock %}
+{% block content %}
+    <style>
+        .dropdown-toggle::after {
+            display: none;
+        }
+        .addbtn{
+            color: white;
+            margin-left: 420px;
+            font:bold;
+        }
+        .addbtn:hover{
+            color: black;
+            background-color: whitesmoke;
+            border-radius: 40px;
+        }
+        .add-to-library{
+            color: white;
+            background-color: #121212;
+            margin-top: 2px;
+            font-size: large;
+            font-family: serif;
+            box-sizing: border-box;
+        }
+    </style>
+<div class="container">
+    <div class="row description">
+        <div class="col md-2">
+            <img class="w-75 h-75 cover-image" src="{{ song.songThumbnail.url }}" alt="cover-image">
+            <h2 class="music-title">{{ song.song_name }}</h2>
+            <div class="d-flex">
+                <h5 class="music-desc">{{ artists|join:", " }}</h5>
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle addbtn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        +
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li style="color: white; background-color: #121212;">Select Playlist</li>
+                        {% for library in libraries %}
+                        <li><a class="dropdown-item add-to-library" href="#" data-song-id="{{ song.id }}" data-library-id="{{ library.id }}">{{ library.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="music-desc"><a class="link1" href="album/{{ song.album.id }}">Discover {{ song.album }}</a></div>
+        </div>
+    </div>
+</div>
+    <audio id="song-url" src="{{ song.song.url }}" style="display: none;"></audio>
+{% endblock %}
+
+{%block body %}
+<div class="player-container">
+    <div class="player-controls">
+        <button id="prev"><i class="fa fa-step-backward"></i></button>
+        <button id="play-pause"><i class="fa fa-play"></i></button>
+        <button id="next"><i class="fa fa-step-forward"></i></button>
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+        </div>
+        <div class="volume-control">
+            <i class="fa fa-volume-up"></i>
+            <input type="range" id="volume" min="0" max="1" step="0.01" value="1">
+        </div>
+    </div>
+    <audio id="audio-player">
+        <!-- The audio source will be dynamically set by JavaScript -->
+    </audio>
+    <form id="logHistoryForm" method="post" action="{% url 'log_history' %}" style="display: none;">
+        {% csrf_token %}
+        <input type="hidden" name="song_id" id="song_id">
+    </form>
+</div>
+{% endblock %}
+
+
+{% block javascript%}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const addToLibraryLinks = document.querySelectorAll('.add-to-library');
+        addToLibraryLinks.forEach(link => {
+            link.addEventListener('click', function (event) {
+                event.preventDefault();
+                const songId = this.getAttribute('data-song-id');
+                const libraryId = this.getAttribute('data-library-id');
+                const csrfToken = '{{ csrf_token }}';
+    
+                fetch('{% url "add_to_library" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({ song_id: songId, library_id: libraryId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Song added to library successfully');
+                    } else {
+                        alert('Error adding song to library');
+                    }
+                });
+            });
+        });
+    });
+    </script>
+{% endblock %}

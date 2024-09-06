@@ -1,0 +1,68 @@
+{% extends 'music/spotify.html'%}
+{%block style%}
+{%load static%}
+    <link rel="stylesheet" href="{% static 'css/lib-style.css' %}">
+{% endblock %}
+{%block content%}
+    <div class="d-flex">
+    <h1>{{request.user}}'s Personal Library</h1>
+    <button type="button" class="btn btn-primary mt-3 addlib" data-toggle="modal" data-target="#libraryModal">
+        +
+    </button>
+    </div>
+    {% for lib in libraries %}
+    <ul class="list-group">
+       <a  class="list-link" href="library/songs/{{lib.id}}">
+        <li class="list-group-item">{{forloop.counter}}.{{lib.name}}
+        </li>
+    </a>
+    </ul>
+    {% endfor %}
+    <!-- modal design -->
+    <div class="modal fade" id="libraryModal" tabindex="-1" aria-labelledby="libraryModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="libraryModalLabel">Create New Library</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="libraryForm">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveLibraryBtn">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{%block javascript%}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('saveLibraryBtn').addEventListener('click', function () {
+            var form = document.getElementById('libraryForm');
+            var formData = new FormData(form);
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '{% url "library_create" %}', true);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        console.log(response.errors);
+                    }
+                }
+            };
+            xhr.send(formData);
+        });
+    });
+    </script>
+{% endblock %}

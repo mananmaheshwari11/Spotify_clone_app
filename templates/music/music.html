@@ -1,0 +1,57 @@
+{% extends 'music/spotify.html' %}
+{% block title %} Songs {% endblock %}
+{% block style %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock %}
+{% block  content%}
+  <style>
+    .card{
+      background-color: #121203;
+      border: 2px solid #121210;
+      border-radius: 20px;
+    }
+    .card:hover{
+      opacity: 0.6;
+      background-color: #1e1e17;
+    }
+  </style>
+  <div class="music-list">
+  <h1>Trending Songs</h1>
+  <a class="ml-100 text-white text-decoration-none" style="cursor: pointer;" id="showMoreBtn">ShowAll</a>
+      <div class="row">
+      {% for i in song%}
+      <div class="col-md-3 mb-4">
+        <div class="card text-white"style="{% if forloop.counter > 4 %} display: none; {% endif %}">
+            <img src="{{i.songThumbnail.url}}" class="card-img-top" alt="Album">
+            <div class="card-body flex">
+                <p class="card-text">{{i.song_name}}</p>
+                <div class="play-button">
+                <a class="play-hold" href="song/{{i.id}}"><i class="fa fa-play play-pause"></i></a>
+              </div>
+            </div>
+        </div>
+    </div>
+       {% endfor %}
+      </div>
+  <!-- Artist -->
+
+  <div class="container">
+      <h1>Trending Artist</h1>
+  <a class="ml-100 text-white text-decoration-none" style="cursor: pointer;" id="showMoreBtn1">ShowAll</a>
+          <div class="row" id="card-container">
+          {% for i in artist%}
+          <div class="col-md-3 mb-4 card-item {% if forloop.counter > 4 %} hidden {% endif %}">
+            <div  class="card text-white music-card" style="background-color: #121212;">
+              <a class="text-decoration-none text-white" href="song/artist/{{i.id}}"><img src="{{i.artist_image.url}}" class="card-img-top" alt="Album"></a>
+                <div class="card-body">
+                  <a class="text-decoration-none text-white" href="song/artist/{{i.id}}"><p class="card-text">{{i.artist_name}}</p></a>
+                </div>
+            </div>
+        </div>
+           {% endfor %}
+          </div>
+      </div>
+      <script src="{% static 'script/script.js' %}"></script>
+    </div>
+{% endblock %}
