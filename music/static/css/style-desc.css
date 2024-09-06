@@ -1,0 +1,49 @@
+.description{
+    background-color: black;
+    background: fixed;
+    position: relative;
+}
+
+.music-title{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: white;
+}
+.music-desc{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: white;
+    cursor:pointer;
+}
+.cover-image{
+    border: 2px solid rgb(172, 170, 170);
+    border-radius: 20px;
+    background-clip: border-box;
+    opacity: 0.8;
+    margin-top: 2%;
+    margin-left: 0;
+}
+
+.link1{
+    text-decoration: none;
+    color: white;
+}
+.link1:hover{
+    color: green;
+}
+
+.heart-icon {
+    cursor: pointer;
+    font-size: 1.5em;
+    transition: color 0.3s;
+    right:0;
+    margin-left: 450px;
+    top: 2%;
+    margin-top: 5px;
+    border: 5px solid rgb(27, 21, 21);
+    border-width: 1px;
+    border-spacing: 100%;
+    border-radius: 50%;
+    background-color: rgb(25, 20, 20);
+}
+
+
+
