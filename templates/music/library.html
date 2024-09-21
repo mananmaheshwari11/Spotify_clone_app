@@ -5,7 +5,7 @@
 {% endblock %}
 {%block content%}
     <div class="d-flex">
-    <h1>{{request.user}}'s Personal Library</h1>
+    <h1>{{request.user.first_name}}'s Vault</h1>
     <button type="button" class="btn btn-primary mt-3 addlib" data-toggle="modal" data-target="#libraryModal" 
     style="font-size: 24px; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
         +
