@@ -74,6 +74,19 @@ def library_create(request):
     return JsonResponse({'success': False, 'errors': 'Invalid request'})
 
 
+def delete_library(request, libid=0):
+    if libid:
+        # Fetch the library object by its ID
+        lib = get_object_or_404(Library, id=libid)
+        lib.delete()  # Deletes the library object
+
+        # Redirect to the library list page after deletion
+        return redirect('/music/library')  # Adjust 'library_list' to your actual list view
+
+    # If the request is not POST, return an error response
+    return HttpResponse("Invalid request", status=400)
+
+
 # adding the song to the library of personal user
 @login_required
 @csrf_exempt
@@ -121,6 +134,19 @@ def get_library_songs(request,lid=0):
             duration = get_audio_duration(file_path)
             song.song_duration=format_duration(duration)
         return render(request,'music/libmusic.html',{'lib':lib,'songs':songs})
+@login_required
+@csrf_exempt
+def delete_from_library(request,song_id,library_id):
+    if request.method == 'POST':
+        try:
+            s = get_object_or_404(Song, id=song_id)
+            library = get_object_or_404(Library, id=library_id, user=request.user)
+            # Remove the song from the library
+            library.song.remove(s)
+            return JsonResponse({'success': True, 'message': 'Song removed from library'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)})
+    return JsonResponse({'success': False, 'message': 'Invalid request method'})
 
 @login_required
 def info(request):
@@ -147,3 +173,30 @@ def log_history(request):
         userHistory.objects.create(user=request.user, song=song)
         return HttpResponse(status=204)
     return HttpResponse(status=400)
+
+
+def delete_library(request, libid=0):
+    if libid:
+        # Fetch the library object by its ID
+        lib = get_object_or_404(Library, id=libid)
+        lib.delete()  # Deletes the library object
+
+        # Redirect to the library list page after deletion
+        return redirect('/music/library')  # Adjust 'library_list' to your actual list view
+
+    # If the request is not POST, return an error response
+    return HttpResponse("Invalid request", status=400)
+    
+def search_results(request):
+    query = request.GET.get('q', '')
+    songs = Song.objects.filter(song_name__icontains=query)  # Adjust field name as necessary
+    libraries = Library.objects.filter(name__icontains=query)  # Adjust field name as necessary
+    artists = Artist.objects.filter(artist_name__icontains=query)  # Adjust field name as necessary
+
+    context = {
+        'query': query,
+        'songs': songs,
+        'libraries': libraries,
+        'artists': artists
+    }
+    return render(request, 'music/search.html', context) 
