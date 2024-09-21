@@ -15,6 +15,7 @@
           <th scope="col">Name</th>
           <th scope="col">Time</th>
           <th scope="col">Play</th>
+          <th>Edit</th>
         </tr>
       </thead>
     <tbody>
@@ -23,7 +24,14 @@
         <td scope="col">{{forloop.counter}}</td>
         <td scope="col">{{i.song_name}}</td>
         <td scope="col">{{i.song_duration}}</td>
-        <td><button class="play-btn" onclick="playSongAndShowPlayer('{{i.song.url}}','{{i.id}}')"><i class="bi bi-play"></i></button></td>            
+        <td><button class="play-btn" onclick="playSongAndShowPlayer('{{i.song.url}}','{{i.id}}')"><i class="bi bi-play"></i></button>
+        </td>
+        <td>
+        <button style="background-color: black; color: white; border: none; border-radius: 50%; padding: 5px 10px; cursor: pointer;" 
+            onclick="deleteSongFromLibrary('{{ i.id }}', '{{ lib.id }}')">
+            <i class="bi bi-trash" style="font-size: 16px;"></i>
+        </button>
+        </td>            
         </tr>
         {% endfor %}
     </tbody>
@@ -57,4 +65,40 @@
     {% endblock %}
 {%block javascript%}
 <script src="{% static 'script/musicscript.js' %}"></script>
+<script>
+    function deleteSongFromLibrary(song_id, library_id) {
+    fetch(`/music/delete_from_library/${song_id}/${library_id}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')  // Ensure CSRF token is included
+        },
+        body: JSON.stringify({})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Song removed successfully!');
+            window.location.reload()
+            // Optionally, refresh the page or dynamically remove the row from the table
+        } else {
+            alert('Failed to remove the song.');
+        }
+    });
+}
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
 {% endblock %}
