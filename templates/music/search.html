@@ -1,0 +1,87 @@
+{% extends 'music/spotify.html'%}
+{%block style%}
+{%load static%}
+<link rel="stylesheet" href="{% static 'css/search-style.css' %}">
+{%endblock%}
+{%block content%}
+<h1>Search Results for "{{ query }}"</h1>
+{%if songs%}
+<h2 class="text">Songs</h2>
+{% if songs|length > 3 %}
+<button class="show-all-btn" onclick="toggleSongs()">Show All</button>
+{% endif %}
+<ul class="song-list">
+    {% for song in songs %}
+        <li class="song-item {% if forloop.counter > 3 %} hidden {% endif %}">
+            <img class="song-thumbnail" src="{{ song.songThumbnail.url }}" alt="Thumbnail"/>
+            <div class="song-details">
+                <span class="song-name"><a class="song-name" href="/music/song/{{song.id}}">{{ song.song_name }}</a></span>
+                <span class="artist-name">
+                {% for artist in song.artists.all %}
+                {{ artist.artist_name }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </span>
+            </div>
+        </li>
+    {% empty %}
+        <li class="song-item">No songs found.</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% if libraries %}
+<h2 class="text">Libraries</h2>
+{% if libraries|length > 3 %}
+<button class="show-all-btn" onclick="toggleSongs()">Show All</button>
+{% endif %}
+<ul class="song-list">
+    {% for library in libraries %}
+        <li class="song-item {% if forloop.counter > 3 %} hidden {% endif %}">
+    <a class="song-name" href="/music/library/songs/{{library.id}}">
+        {{ library.name }}
+    </a>
+        </li>
+    {% empty %}
+        <li class="song-item">No libraries found.</li>
+    {% endfor %}
+</ul>
+
+{% endif %}
+{% if artists %}
+<h2 class="text">Artists</h2>
+{% if artists|length > 3 %}
+<button class="show-all-btn" onclick="toggleSongs()">Show All</button>
+{% endif %}
+<ul class="song-list">
+    {% for artist in artists %}
+        <li class="song-item {% if forloop.counter > 3 %} hidden {% endif %}">
+            <img class="song-thumbnail" src="{{ artist.artist_image.url }}" alt="Thumbnail"/>
+            <a class="song-name" href="/music/song/artist/{{artist.id}}">
+            {{ artist.artist_name }}
+            </a>
+        </li>
+
+    {% empty %}
+        <li class="song-item">No artists found.</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}
+
+{%block javascript%}
+<script>
+    function toggleSongs() {
+        var hiddenSongs = document.querySelectorAll('.song-item.hidden');
+        hiddenSongs.forEach(function(song) {
+            song.classList.toggle('hidden');
+        });
+    
+        var button = document.querySelector('.show-all-btn');
+        button.display=none;
+        if (button.textContent === "Show All") {
+            button.textContent = "Show Less";
+        } else {
+            button.textContent = "Show All";
+        }
+    }
+    </script>
+{% endblock %}    
