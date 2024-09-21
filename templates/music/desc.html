@@ -32,25 +32,35 @@
     <div class="row description">
         <div class="col md-2">
             <img class="w-75 h-75 cover-image" src="{{ song.songThumbnail.url }}" alt="cover-image">
-            <h2 class="music-title">{{ song.song_name }}</h2>
-            <div class="d-flex">
-                <h5 class="music-desc">{{ artists|join:", " }}</h5>
-                <div class="dropdown">
-                    <button class="btn dropdown-toggle addbtn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <h2 class="music-title d-flex align-items-center">
+                {{ song.song_name }}
+                <div class="dropdown ms-2"> <!-- Added margin start for spacing -->
+                    <button class="btn dropdown-toggle addbtn" type="button" data-bs-toggle="dropdown" aria-expanded="false"
+                    style="font-size: 24px; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
                         +
                     </button>
                     <ul class="dropdown-menu">
                         <li style="color: white; background-color: #121212;">Select Playlist</li>
                         {% for library in libraries %}
-                        <li><a class="dropdown-item add-to-library" href="#" data-song-id="{{ song.id }}" data-library-id="{{ library.id }}">{{ library.name }}</a></li>
+                        <li>
+                            <a class="dropdown-item add-to-library" href="#" data-song-id="{{ song.id }}" data-library-id="{{ library.id }}">
+                                {{ library.name }}
+                            </a>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
+            </h2>
+            <div class="d-flex">
+                <h5 class="music-desc">{{ artists|join:", " }}</h5>
             </div>
-            <div class="music-desc"><a class="link1" href="album/{{ song.album.id }}">Discover {{ song.album }}</a></div>
+            <div class="music-desc">
+                <a class="link1" href="album/{{ song.album.id }}">Discover {{ song.album }}</a>
+            </div>
         </div>
     </div>
 </div>
+
     <audio id="song-url" src="{{ song.song.url }}" style="display: none;"></audio>
 {% endblock %}
 
